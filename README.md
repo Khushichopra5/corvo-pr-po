@@ -231,7 +231,7 @@ The amendment never requires a code change. The boundary is honest: a new **comb
 
 ## Deployment
 
-The intended production pairing is **Vercel Hobby + Neon (US East)** with the same Docker-validated app. Node runtime is required for PDF/DB routes. The supplied Neon database is already migrated and seeded; the full owner checklist is in [`DEPLOYMENT.md`](DEPLOYMENT.md).
+The intended production pairing is **Vercel Hobby + Neon (US East)** with the same Docker-validated app. Node runtime is required for PDF/DB routes. The supplied Neon database is already migrated and seeded; deployment is managed outside this repository.
 
 ```bash
 # Vercel: import the repo, then set:
