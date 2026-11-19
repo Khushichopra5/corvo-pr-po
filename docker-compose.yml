@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: corvo
+      POSTGRES_PASSWORD: corvo
+      POSTGRES_DB: corvo
+    ports:
+      - "5434:5432"
+    volumes:
+      - corvo_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U corvo -d corvo"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgres://corvo:corvo@db:5432/corvo
+      AUTH_SECRET: ${AUTH_SECRET:-corvo-local-demo-secret-change-me}
+      APP_URL: http://localhost:3000
+      KIT_DIR: /kit
+      LLM_MODEL: ${LLM_MODEL:-gpt-6.1-terra}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - ./kit:/kit:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  corvo_pgdata:
