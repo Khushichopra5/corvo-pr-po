@@ -1,6 +1,6 @@
 import { createRunFromCsv, getRun, getRunRawLines } from "@/db/queries";
 import { getCurrentUser } from "@/lib/auth";
-import { jsonError } from "@/lib/api";
+import { isUuid, jsonError } from "@/lib/api";
 import { toCsv } from "@/lib/csv";
 import { SAMPLE_HEADERS } from "@/engine/load-data";
 
@@ -11,6 +11,7 @@ export const maxDuration = 300;
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
+    if (!isUuid(id)) return jsonError("Run not found", 404);
     const run = await getRun(id);
     if (!run) return jsonError("Run not found", 404);
     const body = (await request.json().catch(() => ({}))) as { policyVersion?: string; asOf?: string };

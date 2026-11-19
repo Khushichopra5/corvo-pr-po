@@ -1,6 +1,6 @@
 import { approvePolicyVersion, getPolicyById } from "@/db/queries";
 import { getCurrentUser } from "@/lib/auth";
-import { jsonError } from "@/lib/api";
+import { isUuid, jsonError } from "@/lib/api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
+    if (!isUuid(id)) return jsonError("Policy version not found", 404);
     const record = await getPolicyById(id);
     if (!record) return jsonError("Policy version not found", 404);
     const body = (await request.json()) as { effectiveFrom?: string; note?: string };

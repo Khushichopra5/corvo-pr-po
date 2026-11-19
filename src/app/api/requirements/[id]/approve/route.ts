@@ -1,6 +1,6 @@
 import { approveRequirement, getRequirement } from "@/db/queries";
 import { getCurrentUser } from "@/lib/auth";
-import { jsonError } from "@/lib/api";
+import { isUuid, jsonError } from "@/lib/api";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 export async function POST(_request: Request, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
+    if (!isUuid(id)) return jsonError("Requirement not found", 404);
     const existing = await getRequirement(id);
     if (!existing) return jsonError("Requirement not found", 404);
     const user = await getCurrentUser();

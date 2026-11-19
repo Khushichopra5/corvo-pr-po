@@ -247,7 +247,7 @@ export async function getPolicyRecord(version?: string, asOf?: string): Promise<
   } else {
     const effectiveDate = asOf ?? today;
     rows = await sql`SELECT * FROM policy_versions
-      WHERE status IN ('active','approved','scheduled') AND effective_from <= ${effectiveDate}
+      WHERE status IN ('active','approved','scheduled','superseded') AND effective_from <= ${effectiveDate}
       ORDER BY effective_from DESC, approved_at DESC NULLS LAST, created_at DESC LIMIT 1`;
     if (rows.length === 0) {
       rows = await sql`SELECT * FROM policy_versions

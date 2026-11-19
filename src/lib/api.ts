@@ -1,3 +1,7 @@
+export function isUuid(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+}
+
 export function jsonError(message: string, status = 400, details?: unknown): Response {
   return Response.json(
     { error: { message, details: details ?? null } },
