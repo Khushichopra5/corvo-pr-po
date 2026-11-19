@@ -1,0 +1,17 @@
+node_modules
+.next
+.env
+.env.local
+.env.*.local
+npm-debug.log*
+.DS_Store
+coverage
+playwright-report
+test-results
+tsconfig.tsbuildinfo
+
+# Supplied task data is intentionally not committed.
+kit/
+seed/data/
+seed/contracts/
+tests/fixtures/decisions_v5.csv

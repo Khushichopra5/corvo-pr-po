@@ -1,0 +1,53 @@
+{
+  "name": "corvo-pr-po",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:golden": "vitest run src/engine/__tests__/golden.test.ts",
+    "check:engine": "tsx scripts/check-engine.ts",
+    "compare:oracle": "tsx scripts/compare-oracle.ts",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:pdf-cache": "tsx scripts/build-pdf-cache.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:reset": "tsx scripts/reset.ts",
+    "db:verify": "tsx scripts/verify-db.ts",
+    "validate:csv": "tsx scripts/validate-csv.ts",
+    "smoke:api": "tsx scripts/smoke-api.ts"
+  },
+  "engines": {
+    "node": ">=20.9"
+  },
+  "dependencies": {
+    "csv-stringify": "^6.9.0",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.45.4",
+    "jose": "^6.2.17",
+    "lucide-react": "^0.468.0",
+    "next": "16.4.6",
+    "papaparse": "^5.7.1",
+    "pdfjs-dist": "^6.5.438",
+    "postgres": "^4.1.1",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "^24.19.2",
+    "@types/papaparse": "^5.3.15",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "tailwindcss": "4.3.3",
+    "tsx": "^4.20.3",
+    "typescript": "^5",
+    "vitest": "^5.1.1"
+  }
+}
