@@ -9,7 +9,7 @@ The production database has already been prepared. This document is the exact ma
   - 73 items, 48 suppliers, 468 PO-history rows, 12 contracts
   - policy **v5.0**
   - sample run: 186 PR lines → 149 requirements → 82 POs / 55 sourcing events
-- Local checks: 17/17 tests, production build, Docker Compose, and API smoke test.
+- Local checks: 18/18 tests with the private kit, production build, Docker Compose, and API smoke test.
 
 The Neon database supplied for this task is already seeded. **Do not run `npm run db:reset` or `npm run db:seed -- --force` against Neon** unless you intend to wipe the demo data.
 

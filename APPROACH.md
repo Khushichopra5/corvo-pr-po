@@ -57,7 +57,7 @@ Add it to the `Route` union, the route labels/tones, and the execution layer (PO
 
 ## Verification
 
-- `npm test` — policy extraction, full-policy refusal and chat slot parsing in a clean clone; with `KIT_DIR` and `ORACLE_CSV` the 186-row golden suite adds 8 tests (17 total).
+- `npm test` — policy extraction, full-policy refusal and chat slot parsing in a clean clone; with `KIT_DIR` and `ORACLE_CSV` the 186-row golden suite adds 8 tests (18 total).
 - `npm run test:golden` — 14 worked decisions, 3 rankings, all 186 rows against the private oracle fixture.
 - `npm run smoke:api` — live API health, 186-row process, exports, preferred CSV and policy draft.
 - `npm run validate:csv -- file.csv` — exact headers, enums, blocked-supplier guard and PO fields.
