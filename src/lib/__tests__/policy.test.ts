@@ -25,6 +25,17 @@ describe("policy amendment extraction", () => {
     expect(rule?.when).toMatchObject({ all: expect.any(Array) });
   });
 
+  it("captures the upper bound of an 8-10 lakh band", () => {
+    const result = extractPolicyDraft(
+      "At plant CHK1, requirements valued at INR 8,00,000 or more but below INR 10,00,000 go to RFP with 5 suggested suppliers instead of RFQ.",
+      DEFAULT_POLICY,
+    );
+    const rule = result.draft.rules.find((candidate) => candidate.id.includes("CHK1"));
+    expect(rule?.when.all).toEqual(
+      expect.arrayContaining([{ fact: "requirement.value", op: "lt", value: 1000000 }]),
+    );
+  });
+
   it("produces a plain-language diff", () => {
     const result = extractPolicyDraft(
       "Change the emergency cap from INR 5,00,000 to INR 8,00,000, effective 2026-12-01.",

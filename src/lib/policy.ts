@@ -1,6 +1,6 @@
 import { DEFAULT_POLICY, clonePolicy } from "@/engine/default-policy";
 import { validatePolicy } from "@/engine/policy";
-import type { Policy, PolicyRule } from "@/engine/types";
+import type { Policy, PolicyRule, RuleCondition } from "@/engine/types";
 
 const MONTHS: Record<string, number> = {
   january: 1,
@@ -68,6 +68,20 @@ function amountFromMatch(raw: string, unit?: string): number {
   if (u === "lakh" || u === "lakhs" || u === "lac" || u === "lacs" || u === "l") return Math.round(n * 100000);
   if (u === "crore" || u === "cr") return Math.round(n * 10000000);
   return n;
+}
+
+function findUpperBound(text: string, lower: number): number | null {
+  const range = /(?:or more|and above)\s*(?:but\s*)?(?:below|under|less\s+than)\s*(?:₹|INR|Rs\.?)?\s*([\d][\d,]*(?:\.\d+)?)\s*(lakh|lakhs|lac|lacs|L|crore|cr)?/i.exec(text);
+  if (range) {
+    const value = amountFromMatch(range[1], range[2]);
+    if (value > lower) return value;
+  }
+  const between = /between\s*(?:₹|INR|Rs\.?)?\s*([\d][\d,]*(?:\.\d+)?)\s*(?:and|to)\s*(?:₹|INR|Rs\.?)?\s*([\d][\d,]*(?:\.\d+)?)/i.exec(text);
+  if (between) {
+    const value = amountFromMatch(between[2]);
+    if (value > lower) return value;
+  }
+  return null;
 }
 
 function findAmountNear(text: string, keyword: string): number | null {
@@ -293,20 +307,21 @@ export function extractPolicyDraft(text: string, current: Policy = DEFAULT_POLIC
     const plant = /chakan|chk1/i.test(plantMatch[1]) ? "CHK1" : "PUN1";
     const route = /\bRFP\b/i.test(text) ? "RFP" : /\bRFQ\b/i.test(text) ? "RFQ" : /\bSPOT_PO\b/i.test(text) ? "SPOT_PO" : "";
     const amount = findAmountNear(text, plantMatch[1]);
+    const upper = amount ? findUpperBound(text, amount) : null;
     if (route && amount) {
       const suggest = route === "RFP" ? { param: "rfp_suggestions" } : route === "RFQ" ? { param: "rfq_suggestions" } : undefined;
+      const conditions: RuleCondition[] = [
+        { fact: "requirement.plant", op: "eq", value: plant },
+        { fact: "requirement.value", op: "gte", value: amount },
+      ];
+      if (upper) conditions.push({ fact: "requirement.value", op: "lt", value: upper });
       ensureRule(draft, {
-        id: `R-${plant}-${amount}-${route}`,
+        id: `R-${plant}-${amount}-${upper ?? "PLUS"}-${route}`,
         clause: "5.5a",
         priority: 45,
         enabled: true,
-        label: `${plant} ${formatValue(amount)} ${route} rule`,
-        when: {
-          all: [
-            { fact: "requirement.plant", op: "eq", value: plant },
-            { fact: "requirement.value", op: "gte", value: amount },
-          ],
-        },
+        label: `${plant} ${formatValue(amount)}${upper ? `-${formatValue(upper)}` : "+"} ${route} rule`,
+        when: { all: conditions },
         then: {
           decision: route === "SPOT_PO" ? "PO" : "SOURCING_REQUEST",
           route: route as PolicyRule["then"]["route"],
