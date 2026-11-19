@@ -202,3 +202,14 @@ The chat uses a deterministic slot-filling parser, the same item matcher and a c
 - **No UOM blanks, item-code conflicts or duplicate PR keys** in the sample; the app still handles them defensively for the blind batch.
 
 These are analysis findings, not hard-coded branches. The engine is generic; it does not know any PR number.
+
+---
+
+## Blind test — Amendment No. 1 (v5.1, effective 2026-12-01)
+
+- Run 1 under v5.0: **190 lines → 188 processed, 2 `NOT_PROCESSED`** (zero quantity; PUN2), **153 requirements, 95 POs / 47 sourcing events**.
+- Run 2 under v5.1: **78 POs / 66 sourcing events**; **27** input lines changed route, supplier, price or suggestion list.
+- **A1 Packaging:** interpreted as Packaging requirements **≥ ₹1,00,000 must be sourced**, even when they would otherwise qualify for an emergency or spot PO, consistent with the amendment's “must be sourced” wording. Contract PO under 5.2 still wins. This moves the emergency packaging line `PR-26-00555` to RFQ.
+- **A2 RFP threshold:** set to **₹8,00,000**; sourcing below it is RFQ, at or above it is RFP.
+- **A3 CHK1 electrical safety:** CHK1 Electrical Spares **≥ ₹50,000** goes to RFQ/RFP immediately after the contract rule, before emergency/spot; contract PO remains allowed.
+- The amendment was uploaded through `/policy`, corrected in the app's structured policy editor, approved for 2026-12-01, and the same batch was reprocessed under v5.1. The preferred list is exported as of 2026-12-01.
